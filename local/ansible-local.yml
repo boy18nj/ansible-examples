@@ -1,0 +1,38 @@
+---
+- name: "Playing with Ansible"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    url: "https://github.com/twbs/bootstrap/archive/main.zip"
+    file_name: "{{ url | basename }}"
+  tasks:
+
+    - name: "just execute a ls -lrt command"
+      shell: "ls -lrt"
+      register: "output"
+
+    - debug: var=output.stdout
+
+    -  name: "try get-url"
+       get_url:
+         url: "https://github.com/twbs/bootstrap/archive/main.zip"
+         dest: "/Users/amandeepjaswal/IdeaProjects/ansible-examples/local/"
+       register: get_git
+
+    - debug:
+        msg: "{{ get_git.dest | basename }}"
+
+    - set_fact: download_file_name="{{ get_git.dest | basename }}"
+
+    - name: "view all ansible fact keys"
+      debug:
+        var: ansible_facts
+
+#    - name: "debug ansible facts"
+#      debug:
+#        msg: "{{ all_ipv4_addresses }}"
+
+    - name: "Grab the file name from {{ url }} "
+      debug:
+        msg: "Base name is {{ file_name }} and download_file_name {{ download_file_name }} "
